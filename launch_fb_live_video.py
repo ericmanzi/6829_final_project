@@ -11,6 +11,7 @@ import platform
 
 def_chrome_bin = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" if platform.system() == "Darwin" else "google-chrome" 
 chromedriver_bin = os.path.join(os.getcwd(), "chromedriver-mac" if platform.system() == "Darwin" else "chromedriver-linux")
+def_chrome_data_dir = 'chrome_data_%s/default' % ("mac" if platform.system() == "Darwin" else "linux")
 
 parser = ArgumentParser()
 parser.add_argument("--access_token",
@@ -32,7 +33,7 @@ parser.add_argument("--chrome_bin",
 parser.add_argument("--chrome_data_dir_default",
 			help="Path to the user data dir. This dir should be the result of starting chrome"
 			"on an empty dir and responding to the startup dialogs. This dir is copied and not modified",
-			default="chrome_data/default_data_dir")
+			default=def_chrome_data_dir)
 
 parser.add_argument("--num_viewers",
 			type = int,
@@ -45,7 +46,7 @@ parser.add_argument("--log_base",
 
 parser.add_argument("--stream_bin",
 			help="Location of sender binary or script",
-			default="stream.sh")
+			default="./stream.sh")
 
 parser.add_argument("--instructions",
 			help="Show instructions you need to finish before running this script",
@@ -128,7 +129,7 @@ print 'Got live broadcast embed info: %s' % embedURL
 
 print 'Starting to stream: %s %s "%s"' % (args.stream_bin, args.video, streamURL) 
 # Start streaming to the given URL
-sender = subprocess.Popen('%s %s "%s" > /dev/null 2> /dev/null' % (args.stream_bin, args.video, streamURL), shell=True)
+sender = subprocess.Popen('%s %s "%s"' % (args.stream_bin, args.video, streamURL), shell=True)
 procs = [sender]
 time.sleep(5)
 
