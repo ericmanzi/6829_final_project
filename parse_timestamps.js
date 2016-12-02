@@ -73,12 +73,22 @@ function cleanUpHours(delayMap) {
 
 function getDelayList(delayMap) {
     var delayList = [];
+    var viewerStartTime = delayMap[Object.keys(delayMap)[0]]; // time when stream started playing on viewer's end
     var videoStart = Object.keys(delayMap)[0];
     Object.keys(delayMap).forEach(function(startTime) {
         var endTime = delayMap[startTime];
         var delay = getDelay(startTime, endTime);
-        var duration = getDelay(videoStart, startTime);
-        delayList.push({start: startTime, end: endTime, delay: delay, duration: duration});
+        // viewerPlayTime is diff between when viewer started watching video and when current frame was played
+        var viewerPlayTime = getDelay(viewerStartTime, endTime);
+        var originalPlayTime = getDelay(videoStart, startTime); // playback time in original video
+        delayList.push({
+            uploaded: startTime, 
+            downloaded: endTime, 
+            delay: delay, 
+            originalPlayTime: originalPlayTime, 
+            viewerPlayTime: viewerPlayTime,
+            bufferTime: viewerPlayTime - originalPlayTime,
+        });
     });
     return delayList;
 }
@@ -101,3 +111,10 @@ function getTime(timeStr) {
     return d;
 }
 
+
+/*
+Sample output:
+
+
+
+*/
