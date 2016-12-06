@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<MPD
+    type="static"
+    xmlns="urn:mpeg:dash:schema:mpd:2011"
+    availabilityStartTime="2016-12-05T15:57:34-08:00"
+    availabilityEndTime="2016-12-05T16:15:48-08:00"
+    minimumUpdatePeriod="PT1S"
+    minBufferTime="PT1S"
+    timeShiftBufferDepth="P00Y00M00DT00H00M09.15S"
+    suggestedPresentationDelay="PT2S"
+    profiles="urn:hbbtv:dash:profile:isoff-live:2012,urn:mpeg:dash:profile:isoff-live:2011"
+    xmlns:xsi="http://www.w3.org/2011/XMLSchema-instance"
+    xsi:schemaLocation="urn:mpeg:DASH:schema:MPD:2011 DASH-MPD.xsd">
+  <Period start="PT0S" id="dash">
+    <AdaptationSet
+        id="1"
+        segmentAlignment="true">
+      <Representation
+          id="live-md_H264"
+          mimeType="video/mp4"
+          codecs="avc1.4d401e"
+          width="576"
+          height="360"
+          FBQualityClass="sd"
+          FBQualityLabel="360p"
+          frameRate="30"
+          sar="1:1"
+          startWithSAP="1"
+          bandwidth="500000">
+        <SegmentTemplate
+            presentationTimeOffset="0"
+            timescale="1000"
+            media="../dash-md/1313356552068114-$Time$.m4v"
+            initialization="../dash-md/1313356552068114-init.m4v">
+          <SegmentTimeline>
+             <S t="1080000" d="1000"/>
+             <S t="1081000" d="1000"/>
+             <S t="1082000" d="1000"/>
+             <S t="1083000" d="1000"/>
+             <S t="1084000" d="1000"/>
+             <S t="1085000" d="1000"/>
+             <S t="1086000" d="1000"/>
+             <S t="1087000" d="1000"/>
+             <S t="1088000" d="1000"/>
+             <S t="1089000" d="156"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+      <Representation
+          id="live-hd_H264"
+          mimeType="video/mp4"
+          codecs="avc1.4d401e"
+          width="768"
+          height="480"
+          FBQualityClass="sd"
+          FBQualityLabel="480p"
+          frameRate="30"
+          sar="1:1"
+          startWithSAP="1"
+          bandwidth="1000000">
+        <SegmentTemplate
+            presentationTimeOffset="0"
+            timescale="1000"
+            media="../dash-hd/1313356552068114-$Time$.m4v"
+            initialization="../dash-hd/1313356552068114-init.m4v">
+          <SegmentTimeline>
+             <S t="1080000" d="1000"/>
+             <S t="1081000" d="1000"/>
+             <S t="1082000" d="1000"/>
+             <S t="1083000" d="1000"/>
+             <S t="1084000" d="1000"/>
+             <S t="1085000" d="1000"/>
+             <S t="1086000" d="1000"/>
+             <S t="1087000" d="1000"/>
+             <S t="1088000" d="1000"/>
+             <S t="1089000" d="156"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+      <Representation
+          id="live-ld_H264"
+          mimeType="video/mp4"
+          codecs="avc1.4d401e"
+          width="384"
+          height="240"
+          FBQualityClass="sd"
+          FBQualityLabel="240p"
+          frameRate="30"
+          sar="1:1"
+          startWithSAP="1"
+          bandwidth="250000">
+        <SegmentTemplate
+            presentationTimeOffset="0"
+            timescale="1000"
+            media="../dash-ld/1313356552068114-$Time$.m4v"
+            initialization="../dash-ld/1313356552068114-init.m4v">
+          <SegmentTimeline>
+             <S t="1080000" d="1000"/>
+             <S t="1081000" d="1000"/>
+             <S t="1082000" d="1000"/>
+             <S t="1083000" d="1000"/>
+             <S t="1084000" d="1000"/>
+             <S t="1085000" d="1000"/>
+             <S t="1086000" d="1000"/>
+             <S t="1087000" d="1000"/>
+             <S t="1088000" d="1000"/>
+             <S t="1089000" d="156"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet
+        id="2"
+        segmentAlignment="true">
+      <AudioChannelConfiguration
+          schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011"
+          value="1"/>
+      <Representation
+          id="live-md_AAC"
+          mimeType="audio/mp4"
+          codecs="mp4a.40.2"
+          audioSamplingRate="48000"
+          startWithSAP="1"
+          bandwidth="62000">
+        <SegmentTemplate
+            presentationTimeOffset="0"
+            timescale="1000"
+            media="../dash-md/1313356552068114-$Time$.m4a"
+            initialization="../dash-md/1313356552068114-init.m4a">
+          <SegmentTimeline>
+             <S t="1080000" d="1000"/>
+             <S t="1081000" d="1000"/>
+             <S t="1082000" d="1000"/>
+             <S t="1083000" d="1000"/>
+             <S t="1084000" d="1000"/>
+             <S t="1085000" d="1000"/>
+             <S t="1086000" d="1000"/>
+             <S t="1087000" d="1000"/>
+             <S t="1088000" d="1000"/>
+             <S t="1089000" d="156"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>
