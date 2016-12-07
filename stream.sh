@@ -1,11 +1,12 @@
 #!/bin/bash
 
-#RES=640x480
-RES=480x360
+RES=640x480
+# RES=480x360
 BITRATE_MAX=4000k
 BITRATE_TARGET=500k
 # If running in a MahiMahi link shell, should be ingress. Otherwise, eth0.
 INTF_NAME=ingress
+FONTSIZE=160  # RES.y / 3
 
 function cleanup {
     kill -9 $pid
@@ -23,6 +24,12 @@ function cleanup {
 
 #iperf -c 128.30.79.156 -i 1 -t 100
 
-ffmpeg -re -i $1 -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s $RES -bufsize 6000k -vb $BITRATE_TARGET -maxrate $BITRATE_MAX -deinterlace -vcodec libx264 -preset veryfast -g 30 -r 30 -f flv "$2"
+# ffmpeg -re -i $1 -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s $RES -bufsize 6000k -vb $BITRATE_TARGET -maxrate $BITRATE_MAX -deinterlace -vcodec libx264 -preset veryfast -g 30 -r 30 -f flv "$2"
+
+# Stream with timestamp
+ffmpeg -re -i $1 -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s $RES -tune zerolatency \
+-bufsize 6000k -vb $BITRATE_TARGET -maxrate $BITRATE_MAX -deinterlace -vcodec libx264 -preset ultrafast \
+-vf "drawtext=fontfile=Verdana.ttf: text='%{gmtime\:%s}':fontsize=$FONTSIZE:fontcolor=white:box=1:boxcolor=black:x=(w-text_w)/2:y=H/2" \
+-g 30 -r 30 -y -f flv "$2"
 
 #cleanup
