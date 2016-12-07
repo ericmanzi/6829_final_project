@@ -96,7 +96,7 @@ def startViewer(index, watchURL):
 	print '%d Loaded %s' % (index, watchURL)
 	time.sleep(5)
 	# Click the video to begin playing.
-	js = "document.getElementsByTagName('video')[0].click(); document.querySelectorAll('[data-testid]')[0].click()"
+	js = "document.getElementsByTagName('video')[0].click(); document.querySelector('button[data-testid=fullscreen_control]').click()"
         driver.execute_script(js)
 	# Only one client can be attached to the remote debugging port at a time.
 	# Remove the driver and start a viewer to record the downloaded video.
