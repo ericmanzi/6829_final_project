@@ -13,10 +13,18 @@ f = open(infile)
 data = json.load(f)
 f.close()
 
+delta = 0
 for i in xrange(len(data)):
     d = data[i]
     imgbytes = d["args"]["snapshot"]
-    out = open(os.path.join(outdir, 'screenshot_%d.jpg' % i), 'w')
+    ts = long(d["ts"])
+    utc = long(d["utc"])
+    actual_utc = utc
+    if delta == 0:
+        delta = utc * 1000 - ts
+    else:
+        actual_utc = (ts + delta)/1000
+    out = open(os.path.join(outdir, '%s_%d.jpg' % (actual_utc, i)), 'w')
     img = base64.standard_b64decode(imgbytes)
     out.write(img)
     out.flush()

@@ -39,7 +39,10 @@ Chrome({"port": debugPort}, function (chrome) {
         Tracing.dataCollected(function(data){
             var events = data.value;
             console.log("Event received");
-            rawEvents = rawEvents.concat(events.filter(function(evt) { return evt.name == "Screenshot"; }));
+            var d = new Date().getTime();
+            newEvents = events.filter(function(evt) { return evt.name == "Screenshot"; })
+                .map(function(evt) { evt["utc"] = String(d); return evt });
+            rawEvents = rawEvents.concat(newEvents);
         });
         Tracing.tracingComplete(function() {
             //console.log(rawEvents);
