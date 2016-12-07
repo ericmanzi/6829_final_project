@@ -1,0 +1,30 @@
+ffmpeg version N-82218-g31d6571 Copyright (c) 2000-2016 the FFmpeg developers
+  built with gcc 4.8 (Ubuntu 4.8.4-2ubuntu1~14.04.3)
+  configuration: --prefix=/home/vikramn/ffmpeg_build --pkg-config-flags=--static --extra-cflags=-I/home/vikramn/ffmpeg_build/include --extra-ldflags=-L/home/vikramn/ffmpeg_build/lib --bindir=/home/vikramn/bin --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-nonfree
+  libavutil      55. 35.100 / 55. 35.100
+  libavcodec     57. 66.100 / 57. 66.100
+  libavformat    57. 57.100 / 57. 57.100
+  libavdevice    57.  2.100 / 57.  2.100
+  libavfilter     6. 66.100 /  6. 66.100
+  libswscale      4.  3.100 /  4.  3.100
+  libswresample   2.  4.100 /  2.  4.100
+  libpostproc    54.  2.100 / 54.  2.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/mnt/hgfs/VM/VIRB0266.MP4':
+  Metadata:
+    major_brand     : avc1
+    minor_version   : 0
+    compatible_brands: avc1isom
+    creation_time   : 2016-03-03T17:39:52.000000Z
+  Duration: 00:05:28.83, start: 0.000000, bitrate: 8163 kb/s
+    Stream #0:0(eng): Video: h264 (Main) (avc1 / 0x31637661), yuvj420p(pc, bt709), 1280x720 [SAR 1:1 DAR 16:9], 7999 kb/s, 29.97 fps, 29.97 tbr, 240k tbn, 59.94 tbc (default)
+    Metadata:
+      creation_time   : 2016-03-03T17:39:52.000000Z
+      handler_name    : 
+                      : Garmin AVC
+      encoder         : Garmin AVC encoder
+    Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 127 kb/s (default)
+    Metadata:
+      creation_time   : 2016-03-03T17:39:52.000000Z
+      handler_name    : 
+                      : Garmin AAC
+rtmps://rtmp-api.facebook.com:443/rtmp/1730812100579645?ds=1&s_l=1&a=ATigUiAzYRLI8a0m: Protocol not found

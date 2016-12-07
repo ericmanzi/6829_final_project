@@ -8,10 +8,12 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import platform
+# For debugging only
+import pdb
 
 def_chrome_bin = "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" if platform.system() == "Darwin" else "google-chrome" 
 chromedriver_bin = os.path.join(os.getcwd(), "chromedriver-mac" if platform.system() == "Darwin" else "chromedriver-linux")
-def_chrome_data_dir = 'chrome_data_%s/default' % ("mac" if platform.system() == "Darwin" else "linux")
+def_chrome_data_dir = os.path.join(os.getcwd(), 'chrome_data_%s/default' % ("mac" if platform.system() == "Darwin" else "linux"))
 
 parser = ArgumentParser()
 parser.add_argument("--access_token",
@@ -61,10 +63,11 @@ if args.instructions:
 			'\t2. Make a test Facebook app as a developer and make sure you are the admin on the app.',
 			'\t3. Go to \'https://developers.facebook.com/tools/explorer\', choose your app and get a page access token for your page.',
 			'\t4. Request publish_pages permission for your page access token. Use the resulting access token for the access_token flag.',
-			'\t5. Find your chrome binary, and from the command line execute:\n\t\t> <chrome> --user_data_dir=/tmp/my_new_dir',
+			'\t5. Find your chrome binary, and from the command line execute:\n\t\t> <chrome> --user_data_dir=/tmp/my_new_dir --enable-devtools-experiments',
 			'\t   where /tmp/my_new_dir is empty.',
-			'\t6. Navigate to facebook.com and login. After successfully logging in, you can quit Chrome.',
-			'\t7. Use /tmp/my_new_dir as the chrome_data_dir_default flag to this script.']
+                        '\t6. Go to Devtools > ... > Settings > Check the "Timeline recording perspectives UI" box',
+			'\t7. Navigate to facebook.com and login. After successfully logging in, you can quit Chrome.',
+			'\t8. Use /tmp/my_new_dir as the chrome_data_dir_default flag to this script.']
 	print '\n'.join(helpstr)
 	sys.exit(0)
 
@@ -73,15 +76,19 @@ if len(args.access_token) == 0 or len(args.video) == 0:
 	sys.exit(1)
 
 def startViewer(index, watchURL):
-	user_data_dir = args.chrome_data_dir_default + "_tmp" + str(index)
-	log_file = os.path.join(args.log_base, "log_%d" % index)
-	err_file = os.path.join(args.log_base, "err_%d" % index)
+	user_data_dir = args.chrome_data_dir_default  + "_tmp" + str(index)
+	rtt_file = os.path.join(args.log_base, "rtt_%d" % index)
+	snapshot_file = os.path.join(args.log_base, "snapshot_%d" % index)
 	debug_port = 9222 + index
 	# Open a chrome window attached to a debugging port.
-	os.system("rm -r %s; cp -r %s %s; chmod 777 %s" % (user_data_dir, args.chrome_data_dir_default, user_data_dir, user_data_dir))
-	cmd = '%s --remote-debugging-port=%d --user-data-dir=%s' % (args.chrome_bin, debug_port, user_data_dir)
-	chrome = subprocess.Popen("%s %s > /dev/null 2> /dev/null" % (cmd, watchURL), shell=True)
-	# Start a chrome webdriver instance connected to the debugging port.
+	os.system('rm -r %s; cp -r %s %s' % (user_data_dir, args.chrome_data_dir_default, user_data_dir))
+        cmd = ' '.join(['%s' % args.chrome_bin,
+                '--remote-debugging-port=%d' % debug_port,
+                '--user-data-dir=%s' % user_data_dir,
+                '--enable-devtools-experiments'])
+	chrome = subprocess.Popen('%s %s' % (cmd, watchURL), shell=True)
+        print 'Launched chrome with: %s' % cmd
+        # Start a chrome webdriver instance connected to the debugging port.
 	options = Options()
 	options.add_experimental_option("debuggerAddress", '127.0.0.1:%d' % debug_port)
 	driver = webdriver.Chrome(chromedriver_bin, chrome_options=options)
@@ -89,14 +96,14 @@ def startViewer(index, watchURL):
 	print '%d Loaded %s' % (index, watchURL)
 	time.sleep(5)
 	# Click the video to begin playing.
-	js = "document.getElementsByTagName('video')[0].click()"
-	driver.execute_script(js)
+	js = "document.getElementsByTagName('video')[0].click(); document.querySelectorAll('[data-testid]')[0].click()"
+        driver.execute_script(js)
 	# Only one client can be attached to the remote debugging port at a time.
 	# Remove the driver and start a viewer to record the downloaded video.
 	driver.quit()
 	print '%d Quit chrome driver' % index
 	time.sleep(2)
-	viewer = subprocess.Popen("node record_latency.js %s %d > %s 2> %s" % (watchURL, debug_port, log_file, err_file), shell=True)
+	viewer = subprocess.Popen("node record_latency.js %d %d %s %s" % (debug_port, 10, rtt_file, snapshot_file), shell=True)
 	return [chrome, viewer]
 
 params = {"access_token": args.access_token}
@@ -104,8 +111,10 @@ r = requests.post("https://graph.facebook.com/" + args.page_id + "/live_videos",
 resp = r.json()
 
 if r.status_code != 200:
-	print 'Video creation failed. Try refreshing the access token'
-	sys.exit(1)
+    print 'Got status code %d: Video creation failed. Try refreshing the access token' % r.status_code
+    print resp
+    print r
+    sys.exit(1)
 if resp is None:
 	print 'JSON decoding failed. Probably a bad response'
 	sys.exit(1)
@@ -129,7 +138,7 @@ print 'Got live broadcast embed info: %s' % embedURL
 
 print 'Starting to stream: %s %s "%s"' % (args.stream_bin, args.video, streamURL) 
 # Start streaming to the given URL
-sender = subprocess.Popen('%s %s "%s"' % (args.stream_bin, args.video, streamURL), shell=True)
+sender = subprocess.Popen('%s %s "%s" > /dev/null 2> /dev/null' % (args.stream_bin, args.video, streamURL), shell=True)
 procs = [sender]
 time.sleep(5)
 
