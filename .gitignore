@@ -1,3 +1,4 @@
 logs/*
 chrome_data_mac/*
 chrome_data_linux/*
+.DS_Store
