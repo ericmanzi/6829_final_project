@@ -42,8 +42,8 @@ Chrome({"port": debugPort}, function (chrome) {
             rawEvents = rawEvents.concat(events.filter(function(evt) { return evt.name == "Screenshot"; }));
         });
         Tracing.tracingComplete(function() {
-            console.log(rawEvents);
-            console.log(rttLogs.join('\n'));
+            //console.log(rawEvents);
+            //console.log(rttLogs.join('\n'));
             fs.writeFileSync(traceOutfile, JSON.stringify(rawEvents, null, 2));
             fs.writeFileSync(rttOutfile, rttLogs.join('\n'));
         });
