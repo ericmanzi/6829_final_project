@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ffmpeg -re -i ~/Desktop/6.829/project/dl-wiz.flv -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s 512x320 -bufsize 6000k -vb 400k -ar 44100 -maxrate 1500k -deinterlace -vcodec libx264 -preset ultrafast -g 60 -r 30 -vf "drawtext=fontfile=Verdana.ttf: text='%{pts:gmtime:1456007118}':fontsize=70:fontcolor=white:box=1:boxcolor=black:x=w/30:y=H-H/5" -y -f flv "rtmp://a.rtmp.youtube.com/live2/ekuj-q3me-g3e1-71wk"
