@@ -32,9 +32,10 @@ function cleanup {
 # ffmpeg -re -i $1 -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s $RES -bufsize 6000k -vb $BITRATE_TARGET -maxrate $BITRATE_MAX -deinterlace -vcodec libx264 -preset veryfast -g 30 -r 30 -f flv "$2"
 
 # Stream with timestamp
+mm-link <(echo 1) <(echo 1) <<EOF
 ffmpeg -re -i $1 -c:a aac -b:a 128k -pix_fmt yuv420p -profile:v baseline -s $RES -tune zerolatency \
 -bufsize 6000k -vb $BITRATE_TARGET -maxrate $BITRATE_MAX -deinterlace -vcodec libx264 -preset ultrafast \
 -vf "drawbox=y=0:x=0:color=black@0.7:w=iw:h=ih:t=max,drawtext=fontfile=Verdana.ttf:text='%{localtime\:%s}':fontsize=$FONTSIZE:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2" \
 -g 30 -r 30 -y -f flv "$2"
-
+EOF
 #cleanup

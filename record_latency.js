@@ -2,7 +2,7 @@
 // client makes a request and gets a response.
 var fs = require('fs');
 var Chrome = require('chrome-remote-interface');
-var TRACE_CATEGORIES = ["devtools.timeline", "disabled-by-default-devtools.timeline", "disabled-by-default-devtools.screenshot"];
+var TRACE_CATEGORIES = ["disabled-by-default-devtools.screenshot"];
 
 var rawEvents = [];
 var rttLogs = [];
@@ -24,18 +24,23 @@ Chrome({"port": debugPort}, function (chrome) {
         var tstart = Date.now()
 		Page.enable();
 		Network.enable();
-	    Tracing.start({
+	    /*Tracing.start({
             "categories":   TRACE_CATEGORIES.join(','),
-            "options":      "sampling-frequency=1"
+            "options":      "sampling-frequency=1",
+            "transferMode": "ReturnAsStream"
+        });*/
+        Network.loadingFinished(function(r) {
+            outStr = "Loaded: " + r.requestId + "," + r.timestamp + "," + r.encodedDataLength;
+            rttLogs.push(outStr);
         });
         Network.responseReceived(function(r) {
 			var rt = r.response.timing;
 			if (rt && r.type == "XHR") {
-				outStr = String(new Date().getTime()) + "," + rt.requestTime + "," + rt.receiveHeadersEnd;
+				outStr = r.requestId + "," + String(new Date().getTime()) + "," + rt.requestTime + "," + rt.receiveHeadersEnd + "," + r.response.encodedDataLength;
                 rttLogs.push(outStr);
-                console.log(rttLogs.length);
+                //console.log(rttLogs.length);
 			}
-		});
+		});/*
         Tracing.dataCollected(function(data){
             var events = data.value;
             console.log("Event received");
@@ -48,10 +53,11 @@ Chrome({"port": debugPort}, function (chrome) {
             //console.log(rawEvents);
             //console.log(rttLogs.join('\n'));
             fs.writeFileSync(traceOutfile, JSON.stringify(rawEvents, null, 2));
-            fs.writeFileSync(rttOutfile, rttLogs.join('\n'));
-        });
+        });*/
         setTimeout(function() {
             Tracing.end();
+            console.log("COMPLETE");
+            fs.writeFileSync(rttOutfile, rttLogs.join('\n'));
         }, timeLimit);
         }
         run();

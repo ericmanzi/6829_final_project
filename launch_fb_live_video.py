@@ -8,6 +8,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import platform
+from pyvirtualdisplay.smartdisplay import SmartDisplay
 # For debugging only
 import pdb
 
@@ -86,25 +87,36 @@ def startViewer(index, watchURL):
                 '--remote-debugging-port=%d' % debug_port,
                 '--user-data-dir=%s' % user_data_dir,
                 '--enable-devtools-experiments'])
-	chrome = subprocess.Popen('%s %s' % (cmd, watchURL), shell=True)
+        disp = SmartDisplay(visible=0,bgcolor='black')
+        disp.start()
+        chrome = subprocess.Popen('%s %s' % (cmd, watchURL), shell=True)
         print 'Launched chrome with: %s' % cmd
-        # Start a chrome webdriver instance connected to the debugging port.
 	options = Options()
-	options.add_experimental_option("debuggerAddress", '127.0.0.1:%d' % debug_port)
+        options.add_experimental_option("debuggerAddress", '127.0.0.1:%d' % debug_port)
 	driver = webdriver.Chrome(chromedriver_bin, chrome_options=options)
-	print '%d Launched chromedriver' % index
+    	print '%d Launched chromedriver' % index
 	print '%d Loaded %s' % (index, watchURL)
 	time.sleep(5)
 	# Click the video to begin playing.
 	js = "document.getElementsByTagName('video')[0].click(); document.querySelector('button[data-testid=fullscreen_control]').click()"
         driver.execute_script(js)
 	# Only one client can be attached to the remote debugging port at a time.
+        driver.quit()
 	# Remove the driver and start a viewer to record the downloaded video.
-	driver.quit()
 	print '%d Quit chrome driver' % index
 	time.sleep(2)
-	viewer = subprocess.Popen("node record_latency.js %d %d %s %s" % (debug_port, 10, rtt_file, snapshot_file), shell=True)
-	return [chrome, viewer]
+	viewer = subprocess.Popen("node record_latency.js %d %d %s %s" % (debug_port, 20, rtt_file, snapshot_file), shell=True)
+        screenshot_dir = '%s/screenshots' % args.log_base
+        if not os.path.exists(screenshot_dir):
+	    os.makedirs(screenshot_dir)
+        count = 0
+        while True:
+            im = disp.grab()
+            count = count + 1
+            #print 'c-%d' % count
+            im.save('%s/%d_%d.jpg' % (screenshot_dir, long(time.time() * 1000), count))
+        disp.stop()
+        return [chrome, viewer]
 
 params = {"access_token": args.access_token}
 r = requests.post("https://graph.facebook.com/" + args.page_id + "/live_videos", params=params)
